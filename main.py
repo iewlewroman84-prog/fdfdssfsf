@@ -1,33 +1,49 @@
-
 # -*- coding: utf-8 -*-
 """
 Анонимный антибуллинг-бот.
-Школьник пишет боту текст — текст уходит на почту.
-Никаких БД, никаких логов, никаких персональных данных.
+Автоматически проверяет и устанавливает библиотеку vkbottle при запуске.
 """
+
+# ==================== АВТОУСТАНОВКА БИБЛИОТЕК ====================
+import subprocess
+import sys
+
+def install_packages():
+    try:
+        import vkbottle
+        print("Библиотека vkbottle уже установлена.")
+    except ImportError:
+        print("Библиотека vkbottle не найдена. Устанавливаю...")
+        # Устанавливаем vkbottle
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "vkbottle"])
+        print("Установка завершена!")
+
+# Запускаем проверку/установку ДО основных импортов
+install_packages()
+
+# ==================== ОСНОВНОЙ КОД ====================
 
 import smtplib
 import time
 from email.mime.text import MIMEText
 from email.header import Header
 from datetime import datetime
+
 from vkbottle.bot import Bot, Message
 from vkbottle import Keyboard, KeyboardButtonColor, Text
 
 # ==================== НАСТРОЙКИ ====================
 
-# ВК
+# --- ВК ---
 VK_TOKEN = "vk1.a.4w0vaymOcHly1eOS5mLLBnrWNI0dIQLd4pEFcY2cuEQ87SICWZaYrda56L9g72gum2DmqQFmcaFHOyyuXCvDtixgiIDakD7l_EhvZgoKPpaq315XmRDbgBrl8LNKGIsGLwr6t3XS16F4uBcfp_oaI-CxImUP5ce5K_wF6eMQ9-7z2BYSeBNSJC8yJoczYqK8hjbprZpx-3ylClChDOnX5Q"
 
-# Почта (Mail.ru)
+# --- Почта (Mail.ru) ---
 SMTP_HOST = "smtp.mail.ru"
 SMTP_PORT = 465
 SMTP_USER = "school.pochta1@mail.ru"
-SMTP_PASS = "qK7wVC6WXPblAom6iRPj"             # ← ваш новый пароль приложения
-
-# Кому приходят жалобы
+SMTP_PASS = "qK7wVC6WXPblAom6iRPj"             # ← пароль приложения
 EMAIL_TO = [
-    "licey121@list.ru",                        # ← почта школы / совета
+    "licey121@list.ru",                        # ← школа получает
     "school.pochta1@mail.ru",                  # ← копия вам
 ]
 
